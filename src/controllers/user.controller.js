@@ -55,7 +55,7 @@ export const singUp = async (req,res)=>{
             codigoSecreto += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
         }
 
-        verifyEmail(email, codigoSecreto);
+        await verifyEmail(email, codigoSecreto);
 
         return res.status(200).json({
             message:"ok"
