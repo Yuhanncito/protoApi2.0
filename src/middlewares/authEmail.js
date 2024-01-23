@@ -12,7 +12,7 @@ export const verifyEmail = async (email,codigoSecreto)=> {
 
         await new Promise ((resolve,reject)=>{
             transporter.sendMail({
-                from: '"Codigo de Verificación" <uchijaisuka02@gmial.com>', // sender address
+                from: '"Codigo de Verificación" <uchijaisuka02@gmail.com>', // sender address
                 to: email, // list of receivers
                 subject: "Codigo de verificacion", // Subject line
                 text: "Tu codigo de verificacion es:", // plain text body

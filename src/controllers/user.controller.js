@@ -33,20 +33,12 @@ export const confirmSingUp = async (req,res) =>{
 
 export const singUp = async (req,res)=>{
     try {
-        const {name,lastName,email,password} = req.body;
+        const {email} = req.body;
 
 
         // Verificar si el usuario ya existe
         const response = await User.findOne({email})
         if (response) return res.status(400).json({message:"El usuario ya existe"})
-
-        // Crear un nuevo usuario
-        const newUser = new User({
-            name,
-            lastName,
-            email,
-            password: await User.ecryptPassword(password)
-        });
 
         
         let caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
