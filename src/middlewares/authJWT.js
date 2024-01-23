@@ -19,3 +19,7 @@ export const verifyToken = async (req,res,next) =>{
     return res.status(401).json({message: 'Unauthorized'})
  }
 }
+
+export const isModerator = async (req,res,next) => {
+   
+}
