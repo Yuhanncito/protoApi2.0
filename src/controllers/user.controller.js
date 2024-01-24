@@ -6,7 +6,8 @@ import {verifyEmail} from "../middlewares/authEmail"
 // Función para registrar un nuevo usuario
 
 export const confirmSingUp = async (req,res) =>{
-    const {name,lastName,email,password,secretCode} = req.body;
+    try{
+        const {name,lastName,email,password,secretCode} = req.body;
 
     const response = await Confirm.findOne({secretCode})
     if (!response) return res.status(400).json({message:"No se encontro el codigo"})
@@ -19,7 +20,6 @@ export const confirmSingUp = async (req,res) =>{
     });
 
     const deleteCode = await Confirm.findOneAndDelete({email,secretCode})
-
     // Guardar el usuario en la base de datos
     const userSaved = await newUser.save();
 
@@ -27,8 +27,11 @@ export const confirmSingUp = async (req,res) =>{
     const token = jwt.sign({id: userSaved._id},config.SECRET,{
         expiresIn: 86400
     })
-    res.status(200).json({token});
-    
+    res.status(200).json({token, message:'ok'});
+    }
+    catch(err){
+        res.status(500).json({token:null,message:'error interno del servidor'});
+    }
 }
 
 export const singUp = async (req,res)=>{
@@ -72,19 +75,50 @@ export const singIn = async (req,res)=>{
         const matchPassword = await User.comparePassword(password,response.password)
 
         if(!matchPassword) return res.status(400).json({message:"Contraseña inválida", token: null})
-        
-        // Crear un token para el usuario
-        const token = jwt.sign({id:response._id},config.SECRET,{
-            expiresIn: 86400
-        })
 
-        res.status(200).json({token,message:'correcto'})
+        let caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let codigoSecreto = '';
+        for (let i = 0; i < 8; i++) {
+            codigoSecreto += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
+        }
+
+        await verifyEmail(email, codigoSecreto);
+        
+
+        res.status(200).json({message:'correcto'})
     } catch (error) {
         // Código de error 500 para errores internos del servidor
         // Se utiliza cuando no se puede determinar un código de estado más específico.
         res.status(500).json({message: "Error interno del servidor"});
     }
 }
+
+
+export const confirmSingIn = async (req,res) =>{
+    try{
+        const {email,secretCode} = req.body;
+
+        const response = await Confirm.findOne({secretCode})
+        if (!response) return res.status(400).json({message:"No se encontro el codigo"})
+
+        const deleteCode = await Confirm.findOneAndDelete({email,secretCode})
+
+        const user = User.findOne({email});
+
+        // Crear un token para el usuario
+        const token = jwt.sign({id: user._id},config.SECRET,{
+            expiresIn: 86400
+        })
+
+        res.status(200).json({token,message:"ok"});
+
+    }catch(err){
+        res.status(500).json({token:null,message:"Error interno del servidor"});
+    }
+    
+    
+}
+
 
 // Función para obtener todos los usuarios
 export const getAll = async (req,res)=>{
