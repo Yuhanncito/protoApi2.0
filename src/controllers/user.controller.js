@@ -10,7 +10,6 @@ export const confirmSingUp = async (req,res) =>{
         const {name,lastName,email,password,secretCode} = req.body;
 
     const response = await Confirm.findOne({secretCode})
-    if (!response) return res.status(400).json({message:"No se encontro el codigo"})
     
     res.status(200).json(req.body);
 
