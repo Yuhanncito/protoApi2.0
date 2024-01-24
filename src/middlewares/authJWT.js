@@ -4,7 +4,7 @@ import UserModel from "../models/User.model";
 
 export const verifyToken = async (req,res,next) =>{
  try {
-    const token = req.headers("x-access-token");
+    const token = req.headers["x-access-token"];
     
     if(!token) return res.status(403).json({message:"No token provider"})
     
@@ -21,5 +21,5 @@ export const verifyToken = async (req,res,next) =>{
 }
 
 export const isModerator = async (req,res,next) => {
-   
+  
 }
