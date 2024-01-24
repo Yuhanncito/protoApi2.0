@@ -11,8 +11,6 @@ export const confirmSingUp = async (req,res) =>{
 
     const response = await Confirm.findOne({secretCode})
     
-    res.status(200).json(req.body);
-
     const newUser = new User({
         name,
         lastName,
