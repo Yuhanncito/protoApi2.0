@@ -6,12 +6,12 @@ const userSchema = new Schema({
     name: {
         type: String,
         require: true,
-        minLength: [3, 'La contraseña debe tener al menos 8 caracteres']
+        minLength: [3, 'el Nombre debe de ser mayor a 3 caracteres']
     },
     lastName: {
         type: String,
         require: true,
-        minLength: [3, 'La contraseña debe tener al menos 8 caracteres']
+        minLength: [3, 'los apellidos deben de ser mayor a 3 caracteres']
     },
     email: {
         type: String,

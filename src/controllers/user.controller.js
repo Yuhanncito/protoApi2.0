@@ -9,7 +9,7 @@ export const confirmSingUp = async (req,res) =>{
     try{
         const {name,lastName,email,password,secretCode} = req.body;
 
-    const response = await Confirm.findOne({secretCode})
+        const response = await Confirm.findOne({secretCode})
     
     const newUser = new User({
         name,
@@ -35,11 +35,13 @@ export const confirmSingUp = async (req,res) =>{
 
 export const singUp = async (req,res)=>{
     try {
-        const {email} = req.body;
 
+        const {name,lastName,email} = req.body;
 
+        if(name.length < 3  || lastName.length < 3) return res.status(400).json({message:"Datos Incompletos"})
         // Verificar si el usuario ya existe
         const response = await User.findOne({email})
+
         if (response) return res.status(400).json({message:"El usuario ya existe"})
 
         
