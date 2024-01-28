@@ -102,14 +102,15 @@ export const confirmSingIn = async (req,res) =>{
         const response = await Confirm.findOne({secretCode})
         if (!response) return res.status(400).json({message:"No se encontro el codigo"})
 
-        const deleteCode = await Confirm.findOneAndDelete({email,secretCode})
+        const user = await User.findOne({email});
 
-        const user = User.findOne({email});
-
+        if(!user) return res.status(400).json({message:"usuario no encontrado"})
+    
         // Crear un token para el usuario
         const token = jwt.sign({id: user._id},config.SECRET,{
             expiresIn: 86400
         })
+        const deleteCode = await Confirm.findOneAndDelete({email,secretCode})
 
         res.status(200).json({token,message:"ok"});
 

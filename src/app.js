@@ -3,6 +3,7 @@ import morgan from "morgan";
 import cors from 'cors';
 import products from "./routes/producs.routes"
 import user from "./routes/user.routes"
+import project from "./routes/project.routes"
 
 const app = express();
 
@@ -19,6 +20,7 @@ app.get('/',(req,res)=>{
 
 app.use('/api/products',products);
 app.use('/api/auth',user);
+app.use('/api/projects',project);
 
 app.use((req, res, next) =>{
     res.status(404).json({message:"Routa incorrecta"});
