@@ -1,7 +1,6 @@
 import jwt from "jsonwebtoken"
 import config from "../config"
 import UserModel from "../models/User.model";
-import { setData } from "../temp";
 
 export const verifyToken = async (req,res,next) =>{
  try {
@@ -14,8 +13,6 @@ export const verifyToken = async (req,res,next) =>{
     const user = await UserModel.findById(decode.id, {password:0})
 
     if(!user) return res.status(404).json({message:"no user found"})
-
-    setData(user._id);
 
     next();
  } catch (error) {

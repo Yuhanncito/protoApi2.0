@@ -9,5 +9,6 @@ router.post('/signin/confirm',userController.confirmSingIn)
 router.post('/forgotPassword',userController.forgotPassword)
 router.post('/forgotPassword/confirm',userController.forgotPasswordVerify)
 router.put('/forgotPassword/update',jws.verifyToken,userController.updatePassword)
-router.get('/',userController.getAll)
+//router.get('/',userController.getAll)
+router.get('/',jws.verifyToken,userController.getUser)
 export default router;

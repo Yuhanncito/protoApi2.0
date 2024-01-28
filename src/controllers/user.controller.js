@@ -203,3 +203,26 @@ export const updatePassword = async (req,res) =>{
         res.status(500).json({token:null,message:"Error interno del servidor"});
     }
 }
+
+export const getUser = async (req,res) =>{
+   
+    try {
+        const token = req.headers["x-access-token"];
+        
+        if(!token) return res.status(403).json({message:"No token provider"})
+        
+        const decode = jwt.verify(token,config.SECRET)
+    
+        const user = await User.findById(decode.id, {password:0})
+    
+        if(!user) return res.status(404).json({message:"no user found"})
+    
+        res.status(200).json({user});
+
+    } catch (error) {
+        res.status(500).json({message:"error interno del servidor"})
+    }
+   
+
+
+}
