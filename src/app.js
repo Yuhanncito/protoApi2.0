@@ -1,9 +1,14 @@
 import  express  from "express";
 import morgan from "morgan";
 import cors from 'cors';
+
+//routes
 import products from "./routes/producs.routes"
 import user from "./routes/user.routes"
 import project from "./routes/project.routes"
+import task from "./routes/task.routes"
+
+
 
 const app = express();
 
@@ -21,6 +26,7 @@ app.get('/',(req,res)=>{
 app.use('/api/products',products);
 app.use('/api/auth',user);
 app.use('/api/projects',project);
+app.use('/api/task',task);
 
 app.use((req, res, next) =>{
     res.status(404).json({message:"Routa incorrecta"});

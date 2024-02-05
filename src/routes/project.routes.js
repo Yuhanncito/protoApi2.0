@@ -4,6 +4,7 @@ import * as jws from "../middlewares/authJWT"
 const router = Router();
 router.post('/',jws.verifyToken,projectCotroller.insertProject);
 router.get('/',jws.verifyToken,projectCotroller.getProjectsWithTaskUsers);
-router.delete('/delete',jws.verifyToken,projectCotroller.deleteProjects);
 router.put('/update',jws.verifyToken,projectCotroller.updateProject);
+router.delete('/delete',jws.verifyToken,projectCotroller.deleteProject)
+router.put('/getById',jws.verifyToken,projectCotroller.getProjectsById)
 export default router;

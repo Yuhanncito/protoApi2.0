@@ -20,6 +20,24 @@ export const verifyToken = async (req,res,next) =>{
  }
 }
 
+export const getUserId = async (token) =>{
+   try {
+      
+      if(!token) return "no token"
+      
+      const decode = jwt.verify(token,config.SECRET)
+  
+      const user = await UserModel.findById(decode.id, {password:0})
+  
+      if(!user) return "no user found"
+
+      return user
+
+   } catch (error) {
+      return null
+   }
+}
+
 export const isModerator = async (req,res,next) => {
   
 }

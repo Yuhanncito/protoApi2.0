@@ -75,6 +75,8 @@ export const singIn = async (req,res)=>{
         // Verificar si la contraseña es correcta
         const matchPassword = await User.comparePassword(password,response.password)
 
+        
+
         if(!matchPassword) return res.status(400).json({message:"Contraseña inválida", token: null})
 
         let caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -83,14 +85,15 @@ export const singIn = async (req,res)=>{
             codigoSecreto += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
         }
 
-        await verifyEmail(email, codigoSecreto);
-        
+        const emailSend = await verifyEmail(email, codigoSecreto);
 
-        res.status(200).json({message:'correcto'})
+        if(!emailSend) return res.status(400).json({message:"Tienes un Código Activo"})
+        
+         res.status(200).json({message:'correcto'})
     } catch (error) {
         // Código de error 500 para errores internos del servidor
         // Se utiliza cuando no se puede determinar un código de estado más específico.
-        res.status(500).json({message: "Error interno del servidor"});
+         res.status(500).json({message: "Error interno del servidor"});
     }
 }
 

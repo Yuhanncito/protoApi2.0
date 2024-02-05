@@ -19,6 +19,10 @@ const userSchema = new Schema({
     },
     finished:{
         type: Date
+    },
+    status:{
+        type:String,
+        default:"Creado"
     }
     
 },{
