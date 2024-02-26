@@ -94,7 +94,18 @@ export const getProjectsWithTaskUsers = async (req,res) => {
                     as: 'tasks'
                 }
             }
-        ]);*/
+        ]);
+
+        select * from tareas where id = 1 inner 
+        join id_tasksRelation = idTasks from tasks
+
+        projectTasks
+
+        select * projectTasks where id = 1 
+
+        Call SpGetProjectWithTasks(1)
+
+        */
         const data = await Project.find({createBy: user._id })
 
         res.status(200).json(data);

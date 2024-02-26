@@ -13,6 +13,7 @@ export const getWorkspacesWithUser = async (req, res) =>{
             path: 'projects',
             model: 'Project'
         });
+        
         if(!workSpaces.length) return res.status(400).json({message:"No se encontró registros"}) 
 
         res.status(200).json(workSpaces);
