@@ -23,6 +23,10 @@ const userSchema = new Schema({
     status:{
         type:String,
         default:"Creado"
+    },
+    workspace:{
+        type: Schema.Types.ObjectId,
+        require: true
     }
     
 },{

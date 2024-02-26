@@ -3,6 +3,8 @@ import Confirm from "../models/confirm.model";
 import  jwt  from "jsonwebtoken";
 import config from "../config";
 import {verifyEmail} from "../middlewares/authEmail"
+import WorkSpace from "../models/workSpace.model";
+
 // Función para registrar un nuevo usuario
 
 export const confirmSingUp = async (req,res) =>{
@@ -26,6 +28,14 @@ export const confirmSingUp = async (req,res) =>{
     const token = jwt.sign({id: userSaved._id},config.SECRET,{
         expiresIn: 86400
     })
+
+    const newWorkSpace = new WorkSpace({
+        workSpaceName:"WorkSpace",
+        propetaryUser:userSaved._id,
+    })
+
+    const workSpaceSaved = newWorkSpace.save();
+
     res.status(200).json({token, message:'ok'});
     }
     catch(err){
@@ -86,6 +96,7 @@ export const singIn = async (req,res)=>{
         }
 
         const emailSend = await verifyEmail(email, codigoSecreto);
+
 
         if(!emailSend) return res.status(400).json({message:"Tienes un Código Activo"})
         
@@ -225,7 +236,5 @@ export const getUser = async (req,res) =>{
     } catch (error) {
         res.status(500).json({message:"error interno del servidor"})
     }
-   
-
-
 }
+
