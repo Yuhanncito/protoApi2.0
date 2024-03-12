@@ -53,17 +53,19 @@ export const updateProject = async (req,res) => {
 
 export const deleteProject = async (req,res) => {
     try{
-        const {idProject,workSpaceid} = req.body;
+        const idProject = req.params.id;
         
         const deletedProject = await Project.findByIdAndDelete(idProject);
-        
+
         if(!deletedProject) return res.status(400).json({message:"error"});
+
+        const workSpace = deletedProject.workspace;
 
         const projectsDeleted = await Task.deleteMany({projectRelation: {$in : idProject}});
 
         if(!projectsDeleted) return res.status(4000).json({message:"error"});
 
-        const projectUpdate = await WorkSpace.updateOne({_id : workSpaceid}, {$pull:{ projects : idProject}});
+        const projectUpdate = await WorkSpace.updateOne({_id : workSpace}, {$pull:{ projects : idProject}});
 
         return res.status(200).json({message:"ok"})
 
@@ -117,7 +119,7 @@ export const getProjectsWithTaskUsers = async (req,res) => {
 
 export const getProjectsById = async (req,res) =>{
     try{
-        const {projectId} = req.body;
+        const projectId = req.params.id;
 
         const data = await Project.findById(projectId);
 

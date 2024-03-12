@@ -20,7 +20,7 @@ app.use(cors());
 
 app.get('/',(req,res)=>{
     res.json({
-        msg:"Welcome to apiSoftionPro"
+        msg:"Welcome to apiSoftionPro API 2.0"
     })
 })
 

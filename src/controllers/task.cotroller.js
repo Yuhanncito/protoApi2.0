@@ -1,5 +1,4 @@
 import Task from '../models/task.model';
-import { getUserId } from '../middlewares/authJWT';
 import Project from '../models/project.model';
 
 export const getTaskByProjectId = async (req,res) =>{
@@ -41,3 +40,32 @@ export const insertTask = async(req,res)=>{
    }
 
 }
+
+export const udpateTask = async(req,res)=>{
+    try{
+        // Extrae el id de la tarea y los campos a actualizar del cuerpo de la solicitud
+        const {idTask, ...updateFields} = req.body;
+        
+        // Encuentra y actualiza la tarea por su id, con los campos a actualizar y devuelve la tarea actualizada
+        const task = await Task.findByIdAndUpdate(idTask, updateFields, {new: true});
+        // Si no se encuentra la tarea, devuelve un mensaje de tarea no válida
+        if(!task) return res.status(400).json({message:"Tarea no válida"});
+    }
+    catch(err){
+        return res.status(500).json({message:"error interno del servidor"})
+    }
+}
+
+export const deleteTask = async(req,res)=>{
+    try {
+        const {idTask} = req.body;
+        
+        const task = await Task.findByIdAndDelete(idTask);
+
+        if(!task) return res.status(400).json({message:"Tarea no válida"})
+    } 
+    catch(err){
+        return res.status(500).json({message:"error interno del servidor"})
+    }
+}
+
