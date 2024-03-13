@@ -4,20 +4,27 @@ import  jwt  from "jsonwebtoken";
 import config from "../config";
 import {verifyEmail} from "../middlewares/authEmail"
 import WorkSpace from "../models/workSpace.model";
+import secretQuestionModel from "../models/secretQuestion.model";
 
 // Función para registrar un nuevo usuario
 
 export const confirmSingUp = async (req,res) =>{
     try{
-        const {name,lastName,email,password,secretCode} = req.body;
+        const {name,lastName,email,password,secretCode,secret,respuestaSecreta} = req.body;
 
         const response = await Confirm.findOne({secretCode})
+
+        const question = await secretQuestionModel.findOne({key:secret})
+
+        if(!question) return res.status(400).json({menssage:"Error de credenciales"})
     
     const newUser = new User({
         name,
         lastName,
         email,
-        password: await User.ecryptPassword(password)
+        password: await User.ecryptPassword(password),
+        questionKey:question._id,
+        questionAnswer:respuestaSecreta
     });
 
     const deleteCode = await Confirm.findOneAndDelete({email,secretCode})
@@ -238,3 +245,42 @@ export const getUser = async (req,res) =>{
     }
 }
 
+
+export const getUserByEmail = async(req, res) =>{
+    try {
+
+        const email = req.params.email
+
+        const data = await User.findOne({email},{password:0})
+
+        if(!data) return res.status(400).json({message:"usuario no encontrado"})
+
+        res.status(200).json({message:'ok',data})
+
+    } catch (err) {
+        res.status(500).json({message:"error interno del servidor"})
+    }
+}
+
+export const forgotPasswordBySecretQuestion = async(req,res) =>{
+    try {
+        const {email, secret, respuestaSecreta} = req.body;
+
+        const question = await secretQuestionModel.findOne({key:secret})
+
+        if(!question) return res.status(400).json({message:"Información Incorrecta 1"})
+
+        const resp = await User.findOne({$and:[{email:email}, {questionKey:question._id},{questionAnswer:respuestaSecreta}]})
+
+        if(!resp) return res.status(400).json({message:"Informacion Incorrecta"})
+
+        const token = jwt.sign({id: resp._id},config.SECRET,{
+            expiresIn: 86400
+        })
+
+        res.status(200).json({message:"ok",token})
+
+    } catch (error) {
+        res.status(500).json({message:"error interno del servidor"})
+    }
+}

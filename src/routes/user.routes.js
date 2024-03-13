@@ -11,4 +11,6 @@ router.post('/forgotPassword/confirm',userController.forgotPasswordVerify)
 router.put('/forgotPassword/update',jws.verifyToken,userController.updatePassword)
 //router.get('/',userController.getAll)
 router.get('/',jws.verifyToken,userController.getUser)
+router.get('/:email',userController.getUserByEmail)
+router.post('/secret',userController.forgotPasswordBySecretQuestion)
 export default router;

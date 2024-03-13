@@ -1,4 +1,5 @@
 import Workspace from "../models/workSpace.model"
+import jwt from "jsonwebtoken"
 import { getUserId } from "./authJWT";
 
 export const verifyRole = async (req, res, next) => {
@@ -6,10 +7,11 @@ export const verifyRole = async (req, res, next) => {
         const token = req.headers["x-access-token"];
         if (!token) return res.status(403).json({ message: "No token provided" });
 
-        const user = await getUserId(token);
+        const id = await getUserId(token);
         if (!user) return res.status(404).json({ message: "User not found" });
 
         const { workspaceid } = req.body;
+        
         if (!workspaceid) return res.status(400).json({ message: "Workspace ID is required" });
 
         const workspace = await Workspace.findById(workspaceid);

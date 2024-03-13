@@ -28,7 +28,15 @@ const userSchema = new Schema({
             type:Schema.Types.ObjectId,
             ref:'projects'
         }
-    ]
+    ],
+    questionKey:{
+        type:Schema.Types.ObjectId,
+        ref:'secrets'
+    },
+    questionAnswer:{
+        type:String,
+        require:true
+    }
 },{
     timestamps: true,
     versionKey: false
