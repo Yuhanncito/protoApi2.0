@@ -251,8 +251,24 @@ export const getUserByEmail = async(req, res) =>{
 
         const email = req.params.email
 
-        const data = await User.findOne({email},{password:0})
+        const data = await User.aggregate([
+            {
+                $match:{email}
+            },
+            {
+                $lookup:{
+                    from:'secrets',
+                    localField:'questionKey',
+                    foreignField:'_id',
+                    as:'questionKey'
+                }
+            },
+            {
+                $project:{password:0}
+            }
+    ])
 
+        console.log("datos: ",data)
         if(!data) return res.status(400).json({message:"usuario no encontrado"})
 
         res.status(200).json({message:'ok',data})
@@ -272,15 +288,30 @@ export const forgotPasswordBySecretQuestion = async(req,res) =>{
 
         const resp = await User.findOne({$and:[{email:email}, {questionKey:question._id},{questionAnswer:respuestaSecreta}]})
 
+        console.log(resp)
+
         if(!resp) return res.status(400).json({message:"Informacion Incorrecta"})
 
-        const token = jwt.sign({id: resp._id},config.SECRET,{
-            expiresIn: 86400
-        })
-
-        res.status(200).json({message:"ok",token})
+        res.status(200).json({message:"ok"})
 
     } catch (error) {
         res.status(500).json({message:"error interno del servidor"})
+    }
+}
+
+export const getQuestbyId = async(req,res) => {
+    try {
+        const question = req.params.id;
+
+        const dataQuestion = await secretQuestionModel.findById(question);
+
+        if(!dataQuestion) return res.status(400).json({messaje:'No Info'})
+
+        res.status(200).json({
+            message:'ok', dataQuestion
+        })
+
+    } catch (error) {
+        res.status(500).json({message: "error interno del servidor"})
     }
 }
