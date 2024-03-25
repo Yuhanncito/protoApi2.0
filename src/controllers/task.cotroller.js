@@ -44,12 +44,16 @@ export const insertTask = async(req,res)=>{
 export const udpateTask = async(req,res)=>{
     try{
         // Extrae el id de la tarea y los campos a actualizar del cuerpo de la solicitud
-        const {idTask, ...updateFields} = req.body;
+        const id = req.params.id
+        
+        const {...updateFields} = req.body;
         
         // Encuentra y actualiza la tarea por su id, con los campos a actualizar y devuelve la tarea actualizada
-        const task = await Task.findByIdAndUpdate(idTask, updateFields, {new: true});
+        const task = await Task.findByIdAndUpdate(id, updateFields, {new: true});
         // Si no se encuentra la tarea, devuelve un mensaje de tarea no válida
         if(!task) return res.status(400).json({message:"Tarea no válida"});
+        
+        res.status(200).json({message:'ok'})
     }
     catch(err){
         return res.status(500).json({message:"error interno del servidor"})
