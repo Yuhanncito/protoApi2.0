@@ -58,7 +58,7 @@ export const udpateTask = async(req,res)=>{
 
 export const deleteTask = async(req,res)=>{
     try {
-        const {idTask} = req.params.id;
+        const idTask = req.params.id;
         
         const task = await Task.findByIdAndDelete(idTask);
 
