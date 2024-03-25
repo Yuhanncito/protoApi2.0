@@ -19,7 +19,7 @@ export const getTaskByProjectId = async (req,res) =>{
 
 export const insertTask = async(req,res)=>{
    try {
-        const {projectRelation,nameTask,descriptionTask,userTasks,timeHoursTaks} = req.body;
+        const {projectRelation,nameTask,descriptionTask,userTasks,timeHoursTaks,status} = req.body;
 
         if(nameTask.length === 0 || projectRelation.length === 0) return res.status(400).json({message:"Nombre Requerido"})
 
@@ -28,15 +28,17 @@ export const insertTask = async(req,res)=>{
             nameTask,
             descriptionTask,
             userTasks,
-            timeHoursTaks
+            timeHoursTaks,
+            status
         })
 
         const taskSaved = await newTask.save();
+
         const projectUpdate = await Project.updateOne({_id : projectRelation}, {$push:{ tasks : taskSaved}});
 
         return res.status(200).json({message:"ok"})
    } catch (error) {
-    return res.status(500).json({message:"error interno del servidor"})
+    return res.status(500).json({message:"error interno del servidor",error})
    }
 
 }
@@ -45,7 +47,7 @@ export const udpateTask = async(req,res)=>{
     try{
         // Extrae el id de la tarea y los campos a actualizar del cuerpo de la solicitud
         const id = req.params.id
-        
+
         const {...updateFields} = req.body;
         
         // Encuentra y actualiza la tarea por su id, con los campos a actualizar y devuelve la tarea actualizada
