@@ -20,6 +20,10 @@ const userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref:'projects',
         require:true
+    },
+    status:{
+        type:String,
+        default:"Pendiente"
     }
 },{
     timestamps: true,
