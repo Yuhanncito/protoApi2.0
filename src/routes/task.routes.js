@@ -7,6 +7,6 @@ const router = Router();
 router.post('/',jws.verifyToken,tasksCotroller.getTaskByProjectId);
 router.post('/newTask',jws.verifyToken,tasksCotroller.insertTask);
 router.put('/:id');
-router.delete('/:id',[jws.verifyToken,jws.isModerator])
+router.delete('/:id',[jws.verifyToken,jws.isModerator],tasksCotroller.deleteTask)
 
 export default router;

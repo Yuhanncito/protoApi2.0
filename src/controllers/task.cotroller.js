@@ -58,11 +58,17 @@ export const udpateTask = async(req,res)=>{
 
 export const deleteTask = async(req,res)=>{
     try {
-        const {idTask} = req.body;
+        const {idTask} = req.params.id;
         
         const task = await Task.findByIdAndDelete(idTask);
 
         if(!task) return res.status(400).json({message:"Tarea no válida"})
+
+        const taskUpdates = await Project.updateOne({_id:task.projectRelation},{$pull:{tasks:task._id}})
+
+        if(!taskUpdates) return res.status(400).json({message:"error"})
+
+        res.status(200).json({message:'ok'})
     } 
     catch(err){
         return res.status(500).json({message:"error interno del servidor"})
