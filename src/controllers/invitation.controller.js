@@ -34,6 +34,39 @@ export const setInvitatio = async (req,res) => {
     }
 }
 
+export const getInvitationsByUserId = async(req,res) =>{
+	try {
+		const token = req.headers["x-access-token"];
+		const user = await getUserId(token);
+
+		const id = req.params.id;
+		const idToken = user._id
+
+		if(idToken != id) return res.status(400).json({message:"Ah ocurrido un error"})
+
+		const invitations = await Invitation.find({idParticipate:user._id},{idParticipate:0})
+            .populate({ 
+                path: 'idPropietary',
+                model: 'User',
+                select: 'name _id' // Selecciona únicamente el nombre y el ID del propietario
+            })
+            .populate({ 
+                path: 'idWorkSpace',
+                model: 'WorkSpace',
+                select: 'workSpaceName _id' // Selecciona únicamente el nombre y el ID del espacio de trabajo
+            });
+
+		if(!invitations) return res.status(400).json({message:"No hay Invitaciones"})
+
+		res.status(200).json({message:'ok',invitations});
+
+		
+
+	} catch (error) {
+		res.status(500).json({message:'Error Interno del Servidor'});
+	}
+}
+
 
 /*const acceptInvitation = async (req,res) =>{
 	try{
