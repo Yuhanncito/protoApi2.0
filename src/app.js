@@ -8,6 +8,7 @@ import user from "./routes/user.routes"
 import project from "./routes/project.routes"
 import task from "./routes/task.routes"
 import workspace from "./routes/workspace.routes"
+import invitation from "./routes/invitate.routes"
 
 
 
@@ -29,6 +30,7 @@ app.use('/api/auth',user);
 app.use('/api/projects',project);
 app.use('/api/task',task);
 app.use('/api/workspace',workspace);
+app.use('/api/invitation',invitation);
 
 app.use((req, res, next) =>{
     res.status(404).json({message:"Routa incorrecta"});
