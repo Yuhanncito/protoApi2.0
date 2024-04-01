@@ -67,24 +67,43 @@ export const getInvitationsByUserId = async(req,res) =>{
 	}
 }
 
+export const denyInvitation = async (req,res)=>{
+	try {
+		const id = req.params.id;
 
-/*const acceptInvitation = async (req,res) =>{
+		const invitationDeleted = await Invitation.findByIdAndDelete(id)
+
+		if(!invitationDeleted) return res.status(400).json({message:'Ah ocurrido un error'})
+
+		res.status(200).json({message:'ok'})
+
+	} catch (error) {
+		res.status(500).json({message:'Error Interno del Servidor'});
+	}
+}
+
+export const acceptInvitation = async (req,res) =>{
 	try{
-		const{id1,id2} = req.body;
-		
-		const idUser = getUserId(req.headers.x-access-token);
+		const idInvitation = req.params.id;
 
-		if(idUser !== id2) return res.status(400).json({message:'usuario incorrecto'})
+		const token = req.headers["x-access-token"];
 
-		const invitacion = await Invitaciones.fineOne({$and:[{IdAnfitrion:id1},{IdInvitado:id2}]})
+		const user = await getUserId(token);
 
-		if(!invitacion) return res.status(400).json({message:'No hay invitacion'})
+		const invitationExist = await Invitation.findById(idInvitation);
 
-		const workSpaceUpdate = await WorkSpace.updateOne({_id : invitacion.context}, {$push:{ participantes : invitacion.IdInvitado}});
+		if(!invitationExist) return res.status(400).json({message:"Ah ocurrido un error invitacion"})
+
+		const idUser = user._id;
+		const idParticipate = invitationExist.idParticipate;
+		const workSpaceId = invitationExist.idWorkSpace;
+
+		if(!idParticipate.equals(idUser)) return res.status(400).json({message:'Ah ocurrido un error usuarios',idParticipate,idUser})
+		const workSpaceUpdate = await WorkSpace.updateOne({_id: workSpaceId}, {$push:{ participates : idUser}});
 
 		if(!workSpaceUpdate) return res.status(400).json({message:'Ah Ocurrido un error'})
 
-		const invitacionDelete = await Invitaciones.fineOneAndDelete({_id:invitacion_id})
+		const invitacionDelete = await Invitation.findByIdAndDelete(idInvitation);
 
 		if(!invitacionDelete) return res.status(400).json({message:'Ah Ocurrido un error'})
 
@@ -92,7 +111,6 @@ export const getInvitationsByUserId = async(req,res) =>{
 
 	}
 	catch(err){
-		res.status(500).json({message:'Error Interno del Servidor'});
+		res.status(500).json({message:'Error Interno del Servidor',err});
 	}
 }
-*/
