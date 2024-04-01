@@ -6,13 +6,11 @@ const userSchema = new Schema({
         type:Schema.Types.ObjectId,
         ref:'users',
         required: true,
-        unique: true,
     },
     idPropietary:{
         type:Schema.Types.ObjectId,
         ref:'users',
         required: true,
-        unique: true,
     },
     idWorkSpace:{
         type:Schema.Types.ObjectId,

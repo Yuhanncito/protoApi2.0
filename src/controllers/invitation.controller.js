@@ -19,6 +19,10 @@ export const setInvitatio = async (req,res) => {
 
         if(!userExist) return res.status(400).json({message:'Error en la peticion 2'});
 
+		const invitationExist = await Invitation.findOne({$and:[{idParticipate:userExist._id},{idPropietary:id._id}]})
+		
+		if(invitationExist) return res.status(400).json({message:'Invitacion Pendiente'})
+
 		const newInvitation = new Invitation({
 			idPropietary:id._id,
 			idParticipate:userExist._id,
