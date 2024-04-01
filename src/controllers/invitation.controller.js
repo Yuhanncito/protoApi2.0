@@ -13,28 +13,27 @@ export const setInvitatio = async (req,res) => {
 
         const workSpaceExist = await WorkSpace.findById(workSpace);
 
-        if(!workSpaceExist) return res.status(400).json({message:'Error en la peticion 1'});
+        if(!workSpaceExist) return res.status(400).json({message:'Error en la petición: El espacio de trabajo no existe'});
 
         const userExist = await User.findOne({email});
 
-        if(!userExist) return res.status(400).json({message:'Error en la peticion 2'});
+        if(!userExist) return res.status(400).json({message:'Error en la petición: El usuario no existe'});
 
-		const invitationExist = await Invitation.findOne({$and:[{idParticipate:userExist._id},{idPropietary:id._id}]})
-		
-		if(invitationExist) return res.status(400).json({message:'Invitacion Pendiente'})
+		const invitationExist = await Invitation.findOne({$and: [{idPropietary: id._id}, {idParticipate: userExist._id}]})
+		if(invitationExist) return res.status(400).json({message:'Ya existe una invitación pendiente para este usuario en este espacio de trabajo',invitationExist})
 
 		const newInvitation = new Invitation({
-			idPropietary:id._id,
-			idParticipate:userExist._id,
-			idWorkSpace:workSpaceExist._id
+			idPropietary:id,
+			idParticipate:userExist,
+			idWorkSpace:workSpaceExist
 		})
+		
+        const savedInvitation = await newInvitation.save();
+
+        res.status(200).json({message:'Invitación enviada correctamente'})
         
-		const savedInvitation = await newInvitation.save();
-
-		res.status(200).json({message:'ok'})
-
     } catch (error) {
-        res.status(500).json({message:'Error Interno del Servidor'});
+        res.status(500).json({message:'Error Interno del Servidor',error});
     }
 }
 
