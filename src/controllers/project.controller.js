@@ -63,7 +63,7 @@ export const deleteProject = async (req,res) => {
 
         const projectsDeleted = await Task.deleteMany({projectRelation: {$in : idProject}});
 
-        if(!projectsDeleted) return res.status(4000).json({message:"error"});
+        if(!projectsDeleted) return res.status(400).json({message:"error"});
 
         const projectUpdate = await WorkSpace.updateOne({_id : workSpace}, {$pull:{ projects : idProject}});
 

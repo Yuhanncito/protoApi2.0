@@ -15,9 +15,15 @@ const userSchema = new Schema({
         ref:'projects'
     }],
     participates:[{
-        type: Schema.Types.ObjectId,
-        ref:'users'
-    }]
+        user:{
+            type: Schema.Types.ObjectId,
+            ref:'users'
+        },
+        privileges:{
+            type:Schema.Types.ObjectId,
+            ref:'privilege'
+        }
+    },]
 },{
     timestamps: true,
     versionKey: false

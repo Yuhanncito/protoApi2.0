@@ -234,7 +234,7 @@ export const getUser = async (req,res) =>{
         
         const decode = jwt.verify(token,config.SECRET)
     
-        const user = await User.findById(decode.id, {password:0})
+        const user = await User.findById(decode.id, {password:0,questionAnswer:0})
     
         if(!user) return res.status(404).json({message:"no user found"})
     

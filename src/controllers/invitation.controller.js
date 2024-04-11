@@ -1,6 +1,7 @@
 import { getUserId } from "../middlewares/authJWT";
 import User from "../models/User.model";
 import Invitation from "../models/invitation.model";
+import privilegesModel from "../models/privileges.model";
 import WorkSpace from "../models/workSpace.model";
 
 export const setInvitatio = async (req,res) => {
@@ -22,6 +23,7 @@ export const setInvitatio = async (req,res) => {
 		const invitationExist = await Invitation.findOne({$and: [{idPropietary: id._id}, {idParticipate: userExist._id}]})
 		if(invitationExist) return res.status(400).json({message:'Ya existe una invitación pendiente para este usuario en este espacio de trabajo',invitationExist})
 
+		if(workSpaceExist.participates.includes(userExist._id)) return res.status(400).json({message: "El usuario ya forma parte de tu área de trabajo"});
 		const newInvitation = new Invitation({
 			idPropietary:id,
 			idParticipate:userExist,
@@ -100,9 +102,9 @@ export const acceptInvitation = async (req,res) =>{
 		const idUser = user._id;
 		const idParticipate = invitationExist.idParticipate;
 		const workSpaceId = invitationExist.idWorkSpace;
-
+		const privilegio = await privilegesModel.findOne({name:'lectura'})
 		if(!idParticipate.equals(idUser)) return res.status(400).json({message:'Ah ocurrido un error usuarios',idParticipate,idUser})
-		const workSpaceUpdate = await WorkSpace.updateOne({_id: workSpaceId}, {$push:{ participates : idUser}});
+		const workSpaceUpdate = await WorkSpace.updateOne({_id: workSpaceId}, {$push:{ participates : {user:idUser, privileges: privilegio._id}}});
 
 		if(!workSpaceUpdate) return res.status(400).json({message:'Ah Ocurrido un error'})
 
