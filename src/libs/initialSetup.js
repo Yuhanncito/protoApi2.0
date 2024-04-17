@@ -1,6 +1,56 @@
 import Secret from "../models/secretQuestion.model";
 import Privilege from "../models/privileges.model";
+import DaysWorking from "../models/daysWorking.model";
 
+
+const generateDaysWorks = async(req,res) =>{
+    try{
+        const countDays = await DaysWorking.estimatedDocumentCount();
+
+        if(countDays > 0) return
+
+        const values = await Promise.all([
+            new DaysWorking({
+                day:'Lunes',
+                startWorking:'07:00',
+                endWorking:'18:00'
+            }).save(),
+            new DaysWorking({
+                day:'Martes',
+                startWorking:'07:00',
+                endWorking:'18:00'
+            }).save(),
+            new DaysWorking({
+                day:'Miercoles',
+                startWorking:'07:00',
+                endWorking:'18:00'
+            }).save(),
+            new DaysWorking({
+                day:'Jueves',
+                startWorking:'07:00',
+                endWorking:'18:00'
+            }).save(),
+            new DaysWorking({
+                day:'Viernes',
+                startWorking:'07:00',
+                endWorking:'18:00'
+            }).save(),
+            new DaysWorking({
+                day:'Sabado',
+                startWorking:'07:00',
+                endWorking:'18:00'
+            }).save(),
+            new DaysWorking({
+                day:'Domingo',
+                startWorking:'07:00',
+                endWorking:'12:00'
+            }).save()
+        ])
+        console.log("registró")
+    }catch(err){
+
+    }
+}
 
 const generatePrivilege = async(req,res) =>{
     try {
@@ -57,3 +107,4 @@ const generateQuestions = async(req,res) =>{
 
 generateQuestions();
 generatePrivilege();
+generateDaysWorks();

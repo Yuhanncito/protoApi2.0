@@ -33,7 +33,6 @@ export const verifyRole = async (req, res, next) => {
                 case 'lectura':
                     return res.status(400).json({ message: "El usuario solo tiene privilegios de lectura en este workspace" });
                 case 'lectura y escritura':
-                    // El usuario es participante con privilegios de lectura y escritura, puede continuar
                     break;
                 default:
                     return res.status(400).json({ message: "El usuario no tiene los privilegios adecuados para este workspace" });

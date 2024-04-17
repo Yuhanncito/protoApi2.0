@@ -6,7 +6,11 @@ export const getTaskByProjectId = async (req,res) =>{
 
         const {projectRelation} = req.body;
 
-        const tasks = await Task.find({projectRelation})
+        const tasks = await Task.find({projectRelation}).populate({
+            path: 'userTasks',
+            model: 'User',
+            select: 'name'
+        })
 
         return res.status(200).json(tasks)
 

@@ -5,6 +5,7 @@ import config from "../config";
 import {verifyEmail} from "../middlewares/authEmail"
 import WorkSpace from "../models/workSpace.model";
 import secretQuestionModel from "../models/secretQuestion.model";
+import Logs from "../models/logs.model";
 
 // Función para registrar un nuevo usuario
 
@@ -42,6 +43,15 @@ export const confirmSingUp = async (req,res) =>{
     })
 
     const workSpaceSaved = newWorkSpace.save();
+
+    const logs = new Logs({
+        action:"Sign Up",
+        ipClient:req.ip,
+        date:new Date(),
+        user:userSaved._id
+    })
+
+    const logsSaved = logs.save();
 
     res.status(200).json({token, message:'ok'});
     }
@@ -105,7 +115,7 @@ export const singIn = async (req,res)=>{
         const emailSend = await verifyEmail(email, codigoSecreto);
 
 
-        if(!emailSend) return res.status(400).json({message:"Tienes un Código Activo"})
+        if(!emailSend) return res.status(200).json({message:"Tienes un Código Activo"})
         
          res.status(200).json({message:'correcto'})
     } catch (error) {
@@ -131,7 +141,17 @@ export const confirmSingIn = async (req,res) =>{
         const token = jwt.sign({id: user._id},config.SECRET,{
             expiresIn: 86400
         })
-        const deleteCode = await Confirm.findOneAndDelete({email,secretCode})
+
+        const log = new Logs({
+            action:"Inicio de Sesion",
+            ipClient:req.ip,
+            date:new Date(),
+            user:user._id
+        })
+
+        const logSaved = log.save();
+
+        const deleteCode = await Confirm.findOneAndDelete({email,secretCode})   
 
         res.status(200).json({token,message:"ok"});
 
@@ -269,7 +289,7 @@ export const getUserByEmail = async(req, res) =>{
     ])
 
         console.log("datos: ",data)
-        if(!data) return res.status(400).json({message:"usuario no encontrado"})
+        if(!data || data.length === 0) return res.status(400).json({message:"usuario no encontrado"})
 
         res.status(200).json({message:'ok',data})
 

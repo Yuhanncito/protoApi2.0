@@ -24,6 +24,9 @@ const userSchema = new Schema({
     status:{
         type:String,
         default:"Pendiente"
+    },
+    dayForStart:{
+        type:Date,
     }
 },{
     timestamps: true,
