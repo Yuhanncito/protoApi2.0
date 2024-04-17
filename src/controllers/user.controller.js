@@ -37,6 +37,9 @@ export const confirmSingUp = async (req,res) =>{
         expiresIn: 86400
     })
 
+
+    
+
     const newWorkSpace = new WorkSpace({
         workSpaceName:"WorkSpace",
         propetaryUser:userSaved._id,
@@ -45,7 +48,7 @@ export const confirmSingUp = async (req,res) =>{
     const workSpaceSaved = newWorkSpace.save();
 
     const logs = new Logs({
-        action:"Sign Up",
+        action:"Creacion de Cuenta",
         ipClient:req.ip,
         date:new Date(),
         user:userSaved._id
@@ -236,6 +239,15 @@ export const updatePassword = async (req,res) =>{
         const token = jwt.sign({id: response._id},config.SECRET,{
             expiresIn: 86400
         })
+
+        const log = new Logs({
+            action:"Cambio de Contraseña",
+            ipClient:req.ip,
+            date:new Date(),
+            user:response._id
+        })
+
+        const logSaved = log.save();
 
         res.status(200).json({message:'ok', token})
         

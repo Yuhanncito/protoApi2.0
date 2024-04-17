@@ -2,6 +2,7 @@ import Project from '../models/project.model';
 import { getUserId } from '../middlewares/authJWT';
 import Task from '../models/task.model';
 import WorkSpace from '../models/workSpace.model';
+import Logs from '../models/logs.model';
 
 export const getProjects = async (req,res) => {
     try{
@@ -36,6 +37,17 @@ export const insertProject = async (req,res) => {
         const savedProject = await newProject.save();
 
         const projectUpdate = await WorkSpace.updateOne({_id : workspaceid}, {$push:{ projects : savedProject}});
+
+        if(!projectUpdate) return res.status(400).json({message:"error"});
+
+        const log = new Logs({
+            action:"Creacion de Proyecto",
+            ipClient:req.ip,
+            date:new Date(),
+            user:user._id
+        })
+
+        const logSaved = log.save();
         
         return res.status(200).json({message:'ok'});
         
@@ -66,6 +78,17 @@ export const deleteProject = async (req,res) => {
         if(!projectsDeleted) return res.status(400).json({message:"error"});
 
         const projectUpdate = await WorkSpace.updateOne({_id : workSpace}, {$pull:{ projects : idProject}});
+
+        if(!projectUpdate) return res.status(400).json({message:"error"});
+
+        const log = new Logs({
+            action:"Eliminacion de Proyecto",
+            ipClient:req.ip,
+            date:new Date(),
+            user:deletedProject.createBy
+        })
+
+        const logSaved = log.save();
 
         return res.status(200).json({message:"ok"})
 
