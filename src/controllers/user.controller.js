@@ -75,7 +75,7 @@ export const singUp = async (req,res)=>{
         if (response) return res.status(400).json({message:"El usuario ya existe"})
 
         
-        let caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let caracteres = 'abcdefghijklmnopqrstuvwxyz0123456789';
         let codigoSecreto = '';
         for (let i = 0; i < 8; i++) {
             codigoSecreto += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
