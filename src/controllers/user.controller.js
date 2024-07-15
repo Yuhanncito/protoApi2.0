@@ -109,7 +109,7 @@ export const singIn = async (req,res)=>{
 
         if(!matchPassword) return res.status(400).json({message:"Contraseña inválida", token: null})
 
-        let caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let caracteres = 'abcdefghijklmnopqrstuvwxyz0123456789';
         let codigoSecreto = '';
         for (let i = 0; i < 8; i++) {
             codigoSecreto += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
